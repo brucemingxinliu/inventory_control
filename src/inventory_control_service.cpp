@@ -11,7 +11,7 @@ using namespace std;
 
 
 bool part_exists = false; // To check if the number of parts on the bin is the same as the proposed number
-int TotalNumOfParts = 98; // the total number of parts or locations to put the parts.
+int TotalNumOfParts = 103; // the total number of parts or locations to put the parts.
 int i;
 int emptySpotCount;
 double half_bin_size = 0.3; // what is the bin size...
