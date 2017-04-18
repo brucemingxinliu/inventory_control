@@ -148,7 +148,7 @@ bool callback(inventory_control_service::InventoryServiceMsgRequest& request, in
 
     		}*/
             for( int k = 0; k <= spot.length ; k++){}
-    		if(PoseStamped_xPose(i) + PoseStamped_x_Pose(i) < radius + (double)(spot(i)) && PoseStamped_yPose(i) + PoseStamped_y_Pose(i)){ // check if the distances of the position is larger than the addition of radius, then this pose is collision free
+    		if(abs(PoseStamped_xPose(i) - PoseStamped_x_Pose(i)) < radius + (double)(spot(i)) && abs(PoseStamped_yPose(i) - PoseStamped_y_Pose(i)) < radius + (double)(spot(i))){ // check if the distances of the position is larger than the addition of radius, then this pose is collision free
     			ROS_WARN("The current locations are: x = %d  y = %d", x , y);
                 x = PoseStamped_xPose(i);
                 y = PoseStamped_yPose(i);
