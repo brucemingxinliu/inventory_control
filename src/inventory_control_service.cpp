@@ -115,7 +115,7 @@ bool callback(inventory_control_service::InventoryServiceMsgRequest& request, in
 //for (bin[0]; bin[i]; i++){ // loop to check from first bin to the last
     ROS_INFO("callback activated");
     String part_name(request.part_name);
-    for(i = 0; i < 5; i++){
+    for(i = 0; i < 7; i++){
         if(part_name.compare(part_name[i].name) == 1){
             radius = part_name[i].radius;
         }
