@@ -46,11 +46,11 @@ part_name[4].radius = 0.03;
 part_name[5].name = "Part_3"; // Bin6 .. 12
 part_name[5].radius = 0.06;
 
-part_name[0].name = "piston_rod_part_2"; // Bin7.. 12
-part_name[0].radius = 0.06;
+part_name[6].name = "piston_rod_part_2"; // Bin7.. 12
+part_name[6].radius = 0.06;
 
-part_name[1].name = "Pulley_part_2"; //Bin2 .. 4
-part_name[1].radius = 0.12;
+part_name[7].name = "Pulley_part_2"; //Bin2 .. 4
+part_name[7].radius = 0.12;
 //BinManager::BinManager(ros::NodeHandle nodeHandle){ // constructor of BinManager
 //BinManger.assignCamera(); // Call the logic camera
 
