@@ -1,0 +1,4 @@
+//InventoryServiceMsg.srv
+//Created by Bruce Mingxin Liu 
+
+String part_name;
