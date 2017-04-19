@@ -1,4 +1,6 @@
-//InventoryServiceMsg.srv
-//Created by Bruce Mingxin Liu 
+#InventoryServiceMsg.srv
+#Created by Bruce Mingxin Liu 
 
-String part_name;
+string part_name
+---
+geometry_msgs/PoseStamped[] poses
