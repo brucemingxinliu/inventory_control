@@ -22,12 +22,14 @@ double x;
 double y;
 double radius;
 int k;
-std::list<int> spot;
 
+
+std::vector<double> part_size;
 geometry_msgs::PoseStamped _xPose;
 geometry_msgs::PoseStamped _yPose;
 geometry_msgs::PoseStamped _x_Pose;
 geometry_msgs::PoseStamped _y_Pose;
+geometry_msgs::PoseStamped part;
 const string defaultPartsNames[totalPartsTypes] = {"piston_rod_part", "gear_part", "pulley_part", "gasket_part",
                                                   "part1", "part2", "part3", "part4"};
 const double defaultPartsSizes[totalPartsTypes][2] = {{0.059,0.052}, {0.078425,0.078425}, {0.23392,0.23392}, {0.31442,0.15684},
@@ -36,16 +38,22 @@ const double defaultPartsSizes[totalPartsTypes][2] = {{0.059,0.052}, {0.078425,0
 
 std::pair<string, double> part_names[8];
 
-//cameraSubscriber = nh_.subscribe(topic, 10, &CameraEstimator::cameraCallback, this);
+
+
+
 
 bool callback(cwru_ariac::InventoryServiceMsgRequest& request, cwru_ariac::InventoryServiceMsgResponse& response){
 //for (bin[0]; bin[i]; i++){ // loop to check from first bin to the last
     ROS_INFO("callback activated");
     string part_name(request.part_name);
    // string abcd = camera.nextPart.name;
+  
+    
     for(i = 0; i < 7; i++){
         if(part_name.compare(defaultPartsName[i]) == 1){
-            radius = part_names[i].second;
+            
+            x = defaultPartsSizes[i][1];
+            y = defaultPartsSizes[i][2];
         }
 
     }
@@ -95,45 +103,18 @@ bool callback(cwru_ariac::InventoryServiceMsgRequest& request, cwru_ariac::Inven
         ros::ServiceServer service = nh.advertiseService("look_up_parts_space",callback); 
 
 		CameraEstimator camera(nh, "/ariac/logical_camera_1");
-		//camera.ForceUpdate();
+    		//camera.ForceUpdate();
+
+
+         ROS_INFO("THIS IS A TEST");
 
 		for (auto part : camera.inView) {
 	    ROS_INFO_STREAM("This is pose stamped of each part:\n" << part.pose); // also equal to outPose
 	    ROS_INFO_STREAM("This is pose of each part:\n" << part.pose.pose);
 	    ROS_INFO_STREAM("This is the name of each part:\n" << part.name);
-}
+    }
         ROS_INFO("Ready to look up parts.");
 
-        /*
-        part_names[0].first = "piston_rod_part_1"; // Bin1.. 12
-		part_names[0].second = 0.06;
-
-		part_names[1].first = "Pulley_part_1"; //Bin2 .. 4
-		part_names[1].second = 0.12;
-
-		part_names[2].first = "Gear_part"; //Bin3..25
-		part_names[2].second = 0.03;
-
-		part_names[3].first = "gasket_part"; //Bin4 .. 4
-		part_names[3].second = 0.1;
-
-		part_names[4].first = "Part_4"; // Bin5 .. 25
-		part_names[4].second = 0.03;
-
-		part_names[5].first = "Part_3"; // Bin6 .. 12
-		part_names[5].second = 0.06;
-
-		part_names[6].first = "piston_rod_part_2"; // Bin7.. 12
-		part_names[6].second = 0.06;
-
-		part_names[7].first = "Pulley_part_2"; //Bin2 .. 4
-		part_names[7].second = 0.12;
-//BinManager::BinManager(ros::NodeHandle nodeHandle){ // constructor of BinManager
-//BinManger.assignCamera(); // Call the logic camera
-*/
-
-
-        
 
         ros::spin();
         return 0;
