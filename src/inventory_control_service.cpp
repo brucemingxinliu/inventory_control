@@ -103,6 +103,7 @@ bool callback(cwru_ariac::InventoryServiceMsgRequest& request, cwru_ariac::Inven
 	    ROS_INFO_STREAM("This is the name of each part:\n" << part.name);
 }
         ROS_INFO("Ready to look up parts.");
+
         /*
         part_names[0].first = "piston_rod_part_1"; // Bin1.. 12
 		part_names[0].second = 0.06;
