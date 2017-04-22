@@ -28,17 +28,18 @@ int main(int argc, char **argv){
 	while (ros::ok()){
          //   for(geometry_msgs::PoseStamped pose : srv.response.poses)
         //    {
+
 		cout<<endl;
 		cout<<"What's the part's name that has the highest priority? ";
 		cin>>part_name;
 		srv.request.part_name = part_name;// the name of the part is sending to the service to check spacial avaliablity
-	
-		//if(client.call(srv)){
+		// client.call(srv);
+		if(client.call(srv)){
 		cout << "the x coordinate is " << srv.response.poses[0] <<endl;
 		cout << "the x coordinate is " << srv.response.poses[1]<<endl;
 		cout << "the x coordinate is " << srv.response.poses[2]<<endl;
 
-		//}
+		}
          //    }
 	}
 
