@@ -6,6 +6,7 @@
 #include <cwru_ariac/InventoryServiceMsg.h>
 #include "CameraEstimator.h"
 #include "AriacBase.h"
+#include "BinManager.h"
 #include <iostream>
 #include <string>
 #include <utility>
@@ -22,7 +23,9 @@ double      x;
 double      y;
 double      radius;
 int     k;
+
 CameraEstimator *camera_ptr;
+BinManager *bin_ptr;
 
 std::vector<double>     part_size;
 geometry_msgs::PoseStamped  _xPose;
@@ -58,32 +61,20 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
 
     camera_ptr->ForceUpdate();
 
-
     // for ( auto part : camera_ptr->inView )
     // {
     //     ROS_INFO_STREAM( "This is pose stamped of each part:\n" << part.pose ); /* also equal to outPose */
     //     ROS_INFO_STREAM( "This is pose of each part:\n" << part.pose.pose );
     //     ROS_INFO_STREAM( "This is the name of each part:\n" << part.name );
     // }
-    auto part_list = findPart(camera_ptr->inView, part_name);
-    for (auto part : part_list) {
-        response.poses.push_back(part.pose);
-    }
+     auto part_list = findPart(camera_ptr->inView, part_name);
+     for (auto part : part_list) {
+            if(camera_ptr->onBin[1].size() == 0){
+         response.poses.push_back(part.pose);
+     }
+     }
 
-    /* for (int j = 0; j < TotalNumOfParts; j++){ // loop to check each location on each bin
-     *   if(part.traceable = false && nextPart.traceable = true){
-     *       part_exists = true;
-     *       emptySpotCount = emptySpotCount + 1;
-     *       part.pose.pose.position.x.push_back(_xPose);
-     *       part.pose.pose.position.y.push_back(_yPose);
-     *       next.Part.linear.x.push_back(_x_Pose);
-     *       next.Part.linear.y.push_back(_y_Pose);
-     *       spot.push_back(j); // saving all radius of the locations
-     *
-     *   }
-     *
-     * }
-     */
+
 
     for ( i = 0; i <= emptySpotCount; ++i ) /* collision check */
     { /*if(PoseStamped_xPose(i) > bins[i].pose.pose.position.x + half_bin_size && PoseStamped_xPose(i) < part.pose.pose.position.x - half_bin_size){
@@ -116,7 +107,9 @@ int main( int argc, char** argv )
     ros::ServiceServer  service = nh.advertiseService( "look_up_parts_space", callback );
 
     CameraEstimator camera( nh, "/ariac/logical_camera_1" );
+
     camera_ptr = &camera;
+
     camera.ForceUpdate();
 
 
