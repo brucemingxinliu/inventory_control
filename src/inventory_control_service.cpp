@@ -40,8 +40,8 @@ const double            defaultPartsSizes[totalPartsTypes][2] = { { 0.059, 0.052
 
 
 std::pair<string, double> part_names[8];
-
-
+    vector<Bin> bins;
+    
 bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::InventoryServiceMsgResponse & response )
 {
     /* for (bin[0]; bin[i]; i++){ // loop to check from first bin to the last */
@@ -58,7 +58,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
             y   = defaultPartsSizes[i][2];
         }
     }
-
+//  response.poses.push_back(v);
     camera_ptr->ForceUpdate();
 
     // for ( auto part : camera_ptr->inView )
@@ -69,8 +69,12 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     // }
      auto part_list = findPart(camera_ptr->inView, part_name);
      for (auto part : part_list) {
-            if(camera_ptr->onBin[1].size() == 0){
-         response.poses.push_back(part.pose);
+        matchPose(part.pose, bins[0].pose.pose);
+
+        if(camera_ptr->onBin[1].size() == 0){
+        // response.poses.push_back(part.pose);
+         response.num = 2; 
+         response.emptybin = true;
      }
      }
 
@@ -112,6 +116,53 @@ int main( int argc, char** argv )
 
     camera.ForceUpdate();
 
+    bins[3].name = "Bin4";
+    bins[3].priority = 6.0;
+    bins[3].pose.pose.position.x = -1.000000;
+    bins[3].pose.pose.position.y = 0.995000;
+    bins[3].pose.pose.position.z = 0.0;
+
+    bins[7].name = "Bin8";
+    bins[7].priority = 10.0;
+    bins[7].pose.pose.position.x = -0.300000;
+    bins[7].pose.pose.position.y = 0.995000;
+    bins[7].pose.pose.position.z = 0.0;
+
+    bins[2].name = "Bin3";
+    bins[2].priority = 4.0;
+    bins[2].pose.pose.position.x = -1.000000;
+    bins[2].pose.pose.position.y = 0.230000;
+    bins[2].pose.pose.position.z = 0.0;
+
+    bins[6].name = "Bin7";
+    bins[6].priority = 8.0;
+    bins[6].pose.pose.position.x = -0.300000;
+    bins[6].pose.pose.position.y = 0.230000;
+    bins[6].pose.pose.position.z = 0.0;
+
+    bins[1].name = "Bin2";
+    bins[1].priority = 3.0;
+    bins[1].pose.pose.position.x = -1.000000;
+    bins[1].pose.pose.position.y = -0.535000;
+    bins[1].pose.pose.position.z = 0.0;
+
+    bins[5].name = "Bin6";
+    bins[5].priority = 7.0;
+    bins[5].pose.pose.position.x = -0.300000;
+    bins[5].pose.pose.position.y = -0.535000;
+    bins[5].pose.pose.position.z = 0.0;
+
+    bins[0].name = "Bin1";
+    bins[0].priority = 5.0;
+    bins[0].pose.pose.position.x = -1.000000;
+    bins[0].pose.pose.position.y = -1.330000;
+    bins[0].pose.pose.position.z = 0.0;
+
+    bins[4].name = "Bin5";
+    bins[4].priority = 9.0;
+    bins[4].pose.pose.position.x = -0.300000;
+    bins[4].pose.pose.position.y = -1.330000;
+    bins[4].pose.pose.position.z = 0.0;
 
     ROS_INFO( "THIS IS A TEST" );
     // for ( auto part : camera.inView )
