@@ -1,6 +1,10 @@
-#InventoryServiceMsg.srv
-#Created by Bruce Mingxin Liu 
+# comment?
 
 string part_name
 ---
-geometry_msgs/PoseStamped[] poses
+float64 pose_x
+float64 pose_y
+float64 pose_z
+
+int64 num
+bool emptybin
