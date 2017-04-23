@@ -35,10 +35,12 @@ int main(int argc, char **argv){
 		srv.request.part_name = part_name;// the name of the part is sending to the service to check spacial avaliablity
 		// client.call(srv);
 		if(client.call(srv)){
-		cout << "the x coordinate is " << srv.response.poses[0] <<endl;
-		cout << "the x coordinate is " << srv.response.poses[1]<<endl;
-		cout << "the x coordinate is " << srv.response.poses[2]<<endl;
-
+		cout << "the x coordinate is " << srv.response.pose_x <<endl;
+		cout << "the y coordinate is " << srv.response.pose_y<<endl;
+		cout << "the z coordinate is " << srv.response.pose_z<<endl;
+		if (srv.response.emptybin = true ){
+		cout << "The empty bin is bin" <<srv.response.num << endl;
+		}
 		}
          //    }
 	}
