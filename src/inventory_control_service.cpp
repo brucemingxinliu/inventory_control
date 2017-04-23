@@ -13,7 +13,7 @@
 using namespace std;
 
 
-bool        part_exists = false;        /* To check if the number of parts on the bin is the same as the proposed number */
+bool        part_exists = true;        /* To check if the number of parts on the bin is the same as the proposed number */
 int     TotalNumOfParts = 103;          /* the total number of parts or locations to put the parts. */
 int     i;
 int     emptySpotCount;
@@ -29,11 +29,15 @@ CameraEstimator *camera_ptr;
 
 std::vector<double>     part_size;
 double _xPose;
-geometry_msgs::Pose  _yPose;
+double  _yPose;
+double _zPose;
+
 geometry_msgs::Pose  _x_Pose;
 geometry_msgs::Pose  _y_Pose;
+
 geometry_msgs::Pose  part;
-    geometry_msgs::PoseStamped  defaultBin;
+geometry_msgs::PoseStamped  defaultBin;
+geometry_msgs::PoseStamped  locations;
 
 const string            defaultPartsNames[totalPartsTypes] = { "piston_rod_part", "gear_part", "pulley_part", "gasket_part",
                                        "part1",                  "part2",     "part3",   "part4" };
@@ -73,8 +77,24 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
 
      auto part_list = findPart(camera_ptr->inView, part_name);
      for (auto part : part_list) {
-        part.pose.pose.position.x = _xPose;// unpack the part.poses to compare with the stored poses. 
-     // matchPose(part.pose, camera_ptr->binBoundBox[7].Xmin);//matchPose method doesn't work becuase the two comparing pose types need to be the same.
+        //response.poses.push_back(part.pose);
+        part.pose.pose.position.x = _xPose;
+        part.pose.pose.position.y = _yPose;
+        part.pose.pose.position.z = _zPose;
+        for (i = 0; i < 7; i++)
+        {
+        if(bins[i].pose.pose.position.x - 0.01 <= _xPose <= bins[i].pose.pose.position.x + 0.01 && bins[i].pose.pose.position.y - 0.01 <= _yPose <= bins[i].pose.pose.position.y + 0.01 && bins[i].pose.pose.position.z - 0.01 <= _zPose <= bins[i].pose.pose.position.z + 0.01){
+           part_exists = true;
+       }
+           else{
+                part_exists = false;
+                response.pose_x = bins[i].pose.pose.position.x;
+                response.pose_y = bins[i].pose.pose.position.y;
+                response.pose_z = bins[i].pose.pose.position.z;
+           }
+        
+    }
+     // matchPose(part.pose, camera_ptr->binBoundBox[7].Xmin);
 
         if(camera_ptr->onBin[1].size() == 0){
         // response.poses.push_back(part.pose);
@@ -124,7 +144,7 @@ int main( int argc, char** argv )
 
 
     ROS_INFO( "THIS IS A TEST" );
-    ROS_INFO_STREAM("name is : " << bins[0].name);
+   
     // for ( auto part : camera.inView )
     // {
     //     ROS_INFO_STREAM( "This is pose stamped of each part:\n" << part.pose ); /* also equal to outPose */
