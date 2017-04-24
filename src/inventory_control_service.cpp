@@ -54,7 +54,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     /* for (bin[0]; bin[i]; i++){ // loop to check from first bin to the last */
     ROS_INFO( "callback activated" );
     string part_name( request.part_name );
-    /* string abcd = camera.nextPart.name; */
+   
 
 
     for ( i = 0; i < 7; i++ )
@@ -64,8 +64,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
             x   = defaultPartsSizes[i][1];
             y   = defaultPartsSizes[i][2];
         }
-    }
-//  response.poses.push_back(v);
+
     camera_ptr->ForceUpdate();
 
     // for ( auto part : camera_ptr->inView )
@@ -99,35 +98,11 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
      // matchPose(part.pose, camera_ptr->binBoundBox[7].Xmin);
 
         if(camera_ptr->onBin[1].size() == 0){
-        // response.poses.push_back(part.pose);
+       
          response.num = 2; 
          response.emptybin = true;
      }
      }
-
-
-
-    for ( i = 0; i <= emptySpotCount; ++i ) /* collision check */
-    { /*if(PoseStamped_xPose(i) > bins[i].pose.pose.position.x + half_bin_size && PoseStamped_xPose(i) < part.pose.pose.position.x - half_bin_size){
-         *
-         * if (PoseStamped_yPose(i) > part.pose.pose.position.y + half_bin_size && PoseStamped_yPose(i) < part.pose.pose.position.y - half_bin_size){
-         * return bins[i].name; //checking what are the parts should be on this specific bin then check the spatial avaliability
-         * int ptr = i;
-         * x = PoseStamped_xPose(i);
-         * y = PoseStamped_yPose(i);
-         *
-         * }*/
-        /*for( k = 0; k <= spot.size() ; k++){}
-         * if(abs(_xPose(k) - _x_Pose(k)) < radius + (double)(spot(k)) && abs(_yPose(k) - _y_Pose(k)) < radius + (double)(spot(k))){
-         *  ROS_WARN("The current locations are: x = %d  y = %d", x , y);
-         *  x = _xPose.pose.position.x;
-         *  y = _yPose.pose.position.y;
-         *  geometry_msgs::PoseStamped response_pose;
-         *  response_pose.pose.position.x = x;
-         *  response_pose.pose.position.y = y;
-         *  reponse.pose.push_back(response_pose);
-         * }*/
-    }
 }
 
 
