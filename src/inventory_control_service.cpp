@@ -87,10 +87,12 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
            part_exists = true;
        }
            else{
+            if(x<= defaultPartsSizes[totalPartsTypes][2][1] && y <= defaultPartsSizes[totalPartsTypes][2][2]){
                 part_exists = false;
                 response.pose_x = bins[i].pose.pose.position.x;
                 response.pose_y = bins[i].pose.pose.position.y;
                 response.pose_z = bins[i].pose.pose.position.z;
+            }
            }
         
     }
