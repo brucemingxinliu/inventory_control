@@ -63,7 +63,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
         if ( part_name.compare( defaultPartsName[i] ) == 1 )
         {
             r   = defaultPartsSizes[i];
-
+            //ROS_INFO("The part size is recorded as: %d", r);
         }
     }
 //  response.poses.push_back(v);
@@ -82,6 +82,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
          part.pose.pose.position.x = _xPose;
          part.pose.pose.position.y = _yPose;
          part.pose.pose.position.z = _zPose;
+         ROS_INFO_STREAM(part.pose.pose.position.x);
     //     for (i = 0; i < 7; i++)
     //     {
     //     if(bins[i].pose.pose.position.x - 0.05 <= _xPose <= bins[i].pose.pose.position.x + 0.05 && bins[i].pose.pose.position.y - 0.05 <= _yPose <= bins[i].pose.pose.position.y + 0.05 && bins[i].pose.pose.position.z - 0.05 <= _zPose <= bins[i].pose.pose.position.z + 0.05){
@@ -102,18 +103,22 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     //      response.num = 2; 
     //      response.emptybin = true;
     //  }
-    for(i = 0; i <= 4; i++){
-       if( abs(Quadrant_bin2[i][1]) + abs(part.pose.pose.position.x) > defaultPartsSizes[2] + r){
-            response.pose_x = Quadrant_bin2[i][1];
-        }
-        else{
-
-            response.pose_x = 1.1;
-        }
-    }
+  
      ros::spinOnce();
      }
+       for(i = 0; i <= 4; i++){
+            if( abs(Quadrant_bin2[i][0]) + abs(_xPose) > defaultPartsSizes[1] + r){
+            response.pose_x = Quadrant_bin2[i][0];
+            ROS_WARN("X IS WORKING");
+        }
+    }
 
+       for(i = 0; i <= 4; i++){
+            if( abs(Quadrant_bin2[i][1]) + abs(_yPose) > defaultPartsSizes[1] + r){
+            response.pose_y = Quadrant_bin2[i][1];
+            ROS_WARN("Y IS WORKING!!!");
+        }
+    }
 }
 
 
