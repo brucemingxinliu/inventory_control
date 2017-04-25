@@ -19,8 +19,8 @@ int     i;
 int     emptySpotCount;
 double      half_bin_size = 0.3;            /* what is the bin size... */
 double      r;                              /* radius of the priority part.. */
-double      x;
-double      y;
+
+
 double      radius;
 int     k;
 
@@ -32,7 +32,7 @@ double _xPose;
 double  _yPose;
 double _zPose;
 
-geometry_msgs::Pose  _x_Pose;
+double  _x_Pose;
 geometry_msgs::Pose  _y_Pose;
 
 geometry_msgs::Pose  part;
@@ -41,8 +41,9 @@ geometry_msgs::PoseStamped  locations;
 
 const string            defaultPartsNames[totalPartsTypes] = { "piston_rod_part", "gear_part", "pulley_part", "gasket_part",
                                        "part1",                  "part2",     "part3",   "part4" };
-const double            defaultPartsSizes[totalPartsTypes][2] = { { 0.059, 0.052 }, { 0.078425, 0.078425 }, { 0.23392, 0.23392 }, { 0.31442, 0.15684 },
-                                      { 0.3,   0.1   }, { 0.06, 0.015    }, { 0.13,    0.07    }, { 0.09,    0.06    } };
+const double            defaultPartsSizes[totalPartsTypes] =  { 0.059, 0.078425, 0.23392, 0.31442, 0.3, 0.06, 0.13,0.09};
+std::vector<double>     Quadrant_bin1[4] = {{-0.85, -1.187 } ,{ -0.85, -1.474} ,{ -1.1404, -1.195}, {-1.1396, -1.4745}};
+std::vector<double>     Quadrant_bin2[4] = {{-0.849, -0.382}, {-0.85, -0.688}, {-1.143 , -0.4009}, {-1.15, -0.685}};
 
 
 std::pair<string, double> part_names[8];
@@ -54,17 +55,18 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     /* for (bin[0]; bin[i]; i++){ // loop to check from first bin to the last */
     ROS_INFO( "callback activated" );
     string part_name( request.part_name );
-   
+    /* string abcd = camera.nextPart.name; */
 
 
     for ( i = 0; i < 7; i++ )
     {
         if ( part_name.compare( defaultPartsName[i] ) == 1 )
         {
-            x   = defaultPartsSizes[i][1];
-            y   = defaultPartsSizes[i][2];
-        }
+            r   = defaultPartsSizes[i];
 
+        }
+    }
+//  response.poses.push_back(v);
     camera_ptr->ForceUpdate();
 
     // for ( auto part : camera_ptr->inView )
@@ -76,33 +78,41 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
 
      auto part_list = findPart(camera_ptr->inView, part_name);
      for (auto part : part_list) {
-        //response.poses.push_back(part.pose);
-        part.pose.pose.position.x = _xPose;
-        part.pose.pose.position.y = _yPose;
-        part.pose.pose.position.z = _zPose;
-        for (i = 0; i < 7; i++)
-        {
-        if(bins[i].pose.pose.position.x - 0.01 <= _xPose <= bins[i].pose.pose.position.x + 0.01 && bins[i].pose.pose.position.y - 0.01 <= _yPose <= bins[i].pose.pose.position.y + 0.01 && bins[i].pose.pose.position.z - 0.01 <= _zPose <= bins[i].pose.pose.position.z + 0.01){
-           part_exists = true;
-       }
-           else{
-            if(x<= defaultPartsSizes[totalPartsTypes][2][1] && y <= defaultPartsSizes[totalPartsTypes][2][2]){
-                part_exists = false;
-                response.pose_x = bins[i].pose.pose.position.x;
-                response.pose_y = bins[i].pose.pose.position.y;
-                response.pose_z = bins[i].pose.pose.position.z;
-            }
-           }
+    //     //response.poses.push_back(part.pose);
+         part.pose.pose.position.x = _xPose;
+         part.pose.pose.position.y = _yPose;
+         part.pose.pose.position.z = _zPose;
+    //     for (i = 0; i < 7; i++)
+    //     {
+    //     if(bins[i].pose.pose.position.x - 0.05 <= _xPose <= bins[i].pose.pose.position.x + 0.05 && bins[i].pose.pose.position.y - 0.05 <= _yPose <= bins[i].pose.pose.position.y + 0.05 && bins[i].pose.pose.position.z - 0.05 <= _zPose <= bins[i].pose.pose.position.z + 0.05){
+    //        part_exists = true;
+    //    }
+    //        else{
+    //             part_exists = false;
+    //             response.pose_x = bins[i].pose.pose.position.x;
+    //             response.pose_y = bins[i].pose.pose.position.y;
+    //             response.pose_z = bins[i].pose.pose.position.z;
+    //        }
         
-    }
-     // matchPose(part.pose, camera_ptr->binBoundBox[7].Xmin);
+    // }
+    //  // matchPose(part.pose, camera_ptr->binBoundBox[7].Xmin);
 
-        if(camera_ptr->onBin[1].size() == 0){
-       
-         response.num = 2; 
-         response.emptybin = true;
+    //     if(camera_ptr->onBin[1].size() == 0){
+    //     // response.poses.push_back(part.pose);
+    //      response.num = 2; 
+    //      response.emptybin = true;
+    //  }
+    for(i = 0; i <= 4; i++){
+       if( abs(Quadrant_bin2[i][1]) + abs(part.pose.pose.position.x) > defaultPartsSizes[2] + r){
+            response.pose_x = Quadrant_bin2[i][1];
+        }
+        else{
+            response.pose_x = 1.1;
+        }
+    }
+     ros::spinOnce();
      }
-     }
+
 }
 
 
