@@ -107,6 +107,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
             response.pose_x = Quadrant_bin2[i][1];
         }
         else{
+
             response.pose_x = 1.1;
         }
     }
