@@ -63,6 +63,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
         if ( part_name.compare( defaultPartsName[i] ) == 1 )
         {
             r   = defaultPartsSizes[i];
+            k = i;
             //ROS_INFO("The part size is recorded as: %d", r);
         }
     }
@@ -79,10 +80,10 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
      auto part_list = findPart(camera_ptr->inView, part_name);
      for (auto part : part_list) {
     //     //response.poses.push_back(part.pose);
-         part.pose.pose.position.x = _xPose;
-         part.pose.pose.position.y = _yPose;
-         part.pose.pose.position.z = _zPose;
-         ROS_INFO_STREAM(part.pose.pose.position.x);
+         // part.pose.pose.position.x = _xPose;
+         // part.pose.pose.position.y = _yPose;
+         // part.pose.pose.position.z = _zPose;
+         ROS_INFO_STREAM(part.pose);
     //     for (i = 0; i < 7; i++)
     //     {
     //     if(bins[i].pose.pose.position.x - 0.05 <= _xPose <= bins[i].pose.pose.position.x + 0.05 && bins[i].pose.pose.position.y - 0.05 <= _yPose <= bins[i].pose.pose.position.y + 0.05 && bins[i].pose.pose.position.z - 0.05 <= _zPose <= bins[i].pose.pose.position.z + 0.05){
@@ -103,22 +104,25 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     //      response.num = 2; 
     //      response.emptybin = true;
     //  }
-  
-     ros::spinOnce();
-     }
-       for(i = 0; i <= 4; i++){
-            if( abs(Quadrant_bin2[i][0]) + abs(_xPose) > defaultPartsSizes[1] + r){
-            response.pose_x = Quadrant_bin2[i][0];
+  response.pose_x = part.pose.pose.position.x;
+    
+     
+       for(i = 0; i <= 1; i++){
+            if( abs(Quadrant_bin2[i][0] - part.pose.pose.position.x) > abs(defaultPartsSizes[k]) + abs(r)){
+            response.pose_x =  Quadrant_bin2[i][0];
             ROS_WARN("X IS WORKING");
         }
-    }
+        }    
 
-       for(i = 0; i <= 4; i++){
-            if( abs(Quadrant_bin2[i][1]) + abs(_yPose) > defaultPartsSizes[1] + r){
+       for(i = 0; i <= 1; i++){
+            if( abs(Quadrant_bin2[i][1] - part.pose.pose.position.y) > abs(defaultPartsSizes[k]) + abs(r)){
             response.pose_y = Quadrant_bin2[i][1];
             ROS_WARN("Y IS WORKING!!!");
         }
     }
+    
+     ros::spinOnce();
+}
 }
 
 
