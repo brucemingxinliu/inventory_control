@@ -16,6 +16,7 @@ using namespace std;
 bool        part_exists = true;        /* To check if the number of parts on the bin is the same as the proposed number */
 int     TotalNumOfParts = 103;          /* the total number of parts or locations to put the parts. */
 int     i;
+int 	counter = 0;
 int     emptySpotCount;
 double      half_bin_size = 0.3;            /* what is the bin size... */
 double      r;                              /* radius of the priority part.. */
@@ -44,6 +45,7 @@ const string            defaultPartsNames[totalPartsTypes] = { "piston_rod_part"
 const double            defaultPartsSizes[totalPartsTypes] =  { 0.059, 0.078425, 0.23392, 0.31442, 0.3, 0.06, 0.13,0.09};
 std::vector<double>     Quadrant_bin1[4] = {{-0.85, -1.187 } ,{ -0.85, -1.474} ,{ -1.1404, -1.195}, {-1.1396, -1.4745}};
 std::vector<double>     Quadrant_bin2[4] = {{-0.849, -0.382}, {-0.85, -0.688}, {-1.143 , -0.4009}, {-1.15, -0.685}};
+std::vector<double>     Quadrant_bin3[4] = {{-1.1, 0.13}, {-1.1, 0.33}, {-0.9 , 0.33}, {-0.9, 0.13}};
 
 
 std::pair<string, double> part_names[8];
@@ -58,13 +60,14 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     /* string abcd = camera.nextPart.name; */
 
 
-    for ( i = 0; i < 7; i++ )
+    for ( k = 0; k < 7; k++ )
     {
-        if ( part_name.compare( defaultPartsName[i] ) == 1 )
+        if ( part_name.compare( defaultPartsName[k] ) == 1 )
         {
-            r   = defaultPartsSizes[i];
-            k = i;
-            //ROS_INFO("The part size is recorded as: %d", r);
+            r   = defaultPartsSizes[k];
+            return k;
+
+            // ROS_INFO("The part size is recorded as: %d", r);
         }
     }
 //  response.poses.push_back(v);
@@ -83,7 +86,7 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
          // part.pose.pose.position.x = _xPose;
          // part.pose.pose.position.y = _yPose;
          // part.pose.pose.position.z = _zPose;
-         ROS_INFO_STREAM(part.pose);
+         //ROS_INFO_STREAM(part.pose);
     //     for (i = 0; i < 7; i++)
     //     {
     //     if(bins[i].pose.pose.position.x - 0.05 <= _xPose <= bins[i].pose.pose.position.x + 0.05 && bins[i].pose.pose.position.y - 0.05 <= _yPose <= bins[i].pose.pose.position.y + 0.05 && bins[i].pose.pose.position.z - 0.05 <= _zPose <= bins[i].pose.pose.position.z + 0.05){
@@ -104,25 +107,49 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
     //      response.num = 2; 
     //      response.emptybin = true;
     //  }
-  response.pose_x = part.pose.pose.position.x;
+  //response.pose_x = part.pose.pose.position.x;
     
-     
-       for(i = 0; i <= 1; i++){
+       if (k ==2){ // assign the checking algorithm corresponding to the correct part. 
+       for(i = 0; i <= 3; i++){
             if( abs(Quadrant_bin2[i][0] - part.pose.pose.position.x) > abs(defaultPartsSizes[k]) + abs(r)){
             response.pose_x =  Quadrant_bin2[i][0];
             ROS_WARN("X IS WORKING");
-        }
-        }    
+            counter = counter + 1;
+			}
+			}
+   
 
-       for(i = 0; i <= 1; i++){
+       for(i = 0; i <= 3; i++){
             if( abs(Quadrant_bin2[i][1] - part.pose.pose.position.y) > abs(defaultPartsSizes[k]) + abs(r)){
             response.pose_y = Quadrant_bin2[i][1];
             ROS_WARN("Y IS WORKING!!!");
         }
     }
+}
+		//if(k == 1){
+
+
+			for(i = 0; i <= 3; i++){
+            if( abs(Quadrant_bin3[i][0] - part.pose.pose.position.x) > abs(defaultPartsSizes[k]) + abs(r)){
+            response.pose_x =  Quadrant_bin3[i][0];
+            ROS_WARN("X IS so WORKING");
+            ROS_INFO("The part num is %d", k);
+            counter = counter + 1;
+			}
+			}
+   
+
+       for(i = 0; i <= 3; i++){
+            if( abs(Quadrant_bin3[i][1] - part.pose.pose.position.y) > abs(defaultPartsSizes[k]) + abs(r)){
+            response.pose_y = Quadrant_bin3[i][1];
+            ROS_WARN("Y IS so WORKING!!!");
+        }
+    }
+	//	}
     
      ros::spinOnce();
 }
+
 }
 
 
