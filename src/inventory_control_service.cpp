@@ -93,10 +93,16 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
 
      	if(index == 2){
      		for(int i = 0; i<=3; i++){
-     			if(  pow((Quadrant_bin2[i][0] - part.pose.pose.position.x), 2.0) + pow((Quadrant_bin2[i][1] - part.pose.pose.position.y), 2.0) > pow(r, 2.0)) // The checking distance should be larger than the radius of the part
+     			if(  pow((Quadrant_bin2[i][0] - part.pose.pose.position.x), 2.0) + pow((Quadrant_bin2[i][1] - part.pose.pose.position.y), 2.0) > pow(r, 2.0)){ // The checking distance should be larger than the radius of the part
 					
 					response.pose_x = Quadrant_bin2[i][0];
 					response.pose_y = Quadrant_bin2[i][1];
+				}
+
+					else{ 
+							response.pose_x = 0.0;
+							response.pose_y = 0.0;
+						}
      		}
 
 
