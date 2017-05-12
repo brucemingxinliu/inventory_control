@@ -28,7 +28,7 @@ double      radius;
 int k; 
 CameraEstimator *camera_ptr;
 
-
+//delcaring the variables of the part sizes and pose. 
 std::vector<double>     part_size;
 double _xPose;
 double  _yPose;
@@ -40,9 +40,10 @@ geometry_msgs::Pose  _y_Pose;
 geometry_msgs::Pose  part;
 geometry_msgs::PoseStamped  defaultBin;
 geometry_msgs::PoseStamped  locations;
-
+//declare the part_names and part sizes.
 char* 					defaultPartsNames[] = { "piston_rod_part", "gear_part", "pulley_part", "gasket_part", "part_1" , "part_2", "part_3", "part_4"};
 double     				defaultPartsSizes[8] =  { 0.059, 0.078425, 0.23392, 0.31442, 0.3, 0.06, 0.13,0.09};
+//defining the locations of the 4 quadrants on each bin
 std::vector<double>     Quadrant_bin1[4] = {{-0.85, -1.187 } ,{ -0.85, -1.474} ,{ -1.1404, -1.195}, {-1.1396, -1.4745}};
 std::vector<double>     Quadrant_bin2[4] = {{-0.849, -0.382}, {-0.85, -0.688}, {-1.143 , -0.4009}, {-1.15, -0.685}};
 std::vector<double>     Quadrant_bin3[4] = {{-1.1, 0.13}, {-1.1, 0.33}, {-0.9 , 0.33}, {-0.9, 0.13}};
@@ -58,16 +59,16 @@ std::vector<double>     Quadrant_bin8[4] = {{-0.15, 1.143}, {-0.45, 1.1453}, {-0
 bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::InventoryServiceMsgResponse & response)
 {
 
-	int index; 
+	int index; //define an index for the part to check
     ROS_INFO( "callback activated" );
     string part_name( request.part_name );
  
     ROS_WARN("The size is %f", defaultPartsSizes[0]);
 	ROS_WARN("The bin size is %f", Quadrant_bin1[3][0]);
 
-    for ( k = 0; k < 7; k++ )
+    for ( k = 0; k < 7; k++ )//for loop to run through each part names
     {
-        if ( part_name.compare( defaultPartsNames[k] ) == 0 )
+        if ( part_name.compare( defaultPartsNames[k] ) == 0 )//checking if the part name is the same then return the radius and index of the part
         {
             r   = defaultPartsSizes[k];
             double test = pow(r,2.0);
@@ -80,25 +81,25 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
         }
     }
 
-    camera_ptr->ForceUpdate();
+    camera_ptr->ForceUpdate();//refresh the camera information
     
  
 
-     auto part_list = findPart(camera_ptr->inView, part_name);
-     for (auto part : part_list) {
+     auto part_list = findPart(camera_ptr->inView, part_name);//to access to the logic camera
+     for (auto part : part_list) {//for loop set to loop at all the part appear on logic camera
 
 
-
+//checking the specific bin defined by the index
      	  if(index == 1){
      		for(int i = 0; i<=3; i++){
      			if(  pow((Quadrant_bin1[i][0] - part.pose.pose.position.x), 2.0) + pow((Quadrant_bin1[i][1] - part.pose.pose.position.y), 2.0) > pow(r, 2.0)){ // The checking distance should be larger than the radius of the part
 					
-					response.pose_x = Quadrant_bin1[i][0];
-					response.pose_y = Quadrant_bin1[i][1];
+					response.pose_x = Quadrant_bin1[i][0];//sending back the empty location on the bin, x
+					response.pose_y = Quadrant_bin1[i][1];//sending back the empty location on the bin, y
 				}
 
 					else{ 
-							response.pose_x = 0.0;
+							response.pose_x = 0.0;//send back 0 if not found
 							response.pose_y = 0.0;
 						}
      		}
@@ -234,13 +235,13 @@ bool callback( cwru_ariac::InventoryServiceMsgRequest & request, cwru_ariac::Inv
 
 int main( int argc, char** argv )
 {
-    ros::init( argc, argv, "inventory_control_service" );
+    ros::init( argc, argv, "inventory_control_service" );//declaring the node name
     ros::NodeHandle     nh;
-    ros::ServiceServer  service = nh.advertiseService( "look_up_parts_space", callback );
+    ros::ServiceServer  service = nh.advertiseService( "look_up_parts_space", callback );//activating the callback
 
     CameraEstimator camera( nh, "/ariac/logical_camera_1" );//Here can be edited to subscribe to more cameras. Ideally one camera for each bin
 
-    camera_ptr = &camera;
+    camera_ptr = &camera;//declare a camera pointer
     camera.ForceUpdate();
 
     ROS_INFO( "Ready to look up parts." );
